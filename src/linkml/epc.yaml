@@ -1,0 +1,245 @@
+id: https://w3id.org/biolink/epc
+name: epc
+description: Evidence, provenance and confidence parameters in the Biolink Model
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+default_prefix: biolink
+default_range: string
+
+# 2. The following prefix maps are retrieved from the
+#    specified contexts defined at https://prefixcommons.org/
+default_curi_maps:
+  - obo_context
+  - idot_context
+  - monarch_context
+  - semweb_context
+
+imports:
+  - core
+
+
+  ## Statistics
+
+slots:
+
+  aggregate statistic:
+    is_a: node property
+    abstract: true
+
+  has count:
+    description: >-
+      number of things with a particular property
+    is_a: aggregate statistic
+    range: integer
+    exact_mappings:
+      - LOINC:has_count
+
+  has total:
+    description: >-
+      total number of things in a particular reference set
+    is_a: aggregate statistic
+    range: integer
+
+  has quotient:
+    is_a: aggregate statistic
+    range: double
+
+  has percentage:
+    description: >-
+      equivalent to has quotient multiplied by 100
+    is_a: aggregate statistic
+    range: double
+
+  has dataset:
+    is_a: node property
+    domain: dataset version
+    range: dataset
+    slot_uri: dct:source
+
+  source web page:
+    is_a: node property
+    domain: dataset summary
+    broad_mappings:
+      - dct:source
+
+  source logo:
+    is_a: node property
+    domain: dataset summary
+    slot_uri: schema:logo
+
+  retrieved on:
+    is_a: node property
+    domain: dataset
+    range: date
+    exact_mappings:
+      - pav:retrievedOn
+
+  version of:
+    is_a: node property
+    domain: dataset version
+    range: dataset summary
+    exact_mappings:
+      - dct:isVersionOf
+
+  version:
+    is_a: node property
+    domain: dataset
+    broad_mappings:
+      - pav:version
+      - owl:versionInfo
+
+  license:
+    is_a: node property
+    domain: information content entity
+    exact_mappings:
+      - dct:license
+    narrow_mappings:
+      - WIKIDATA_PROPERTY:P275
+
+  rights:
+    is_a: node property
+    domain: information content entity
+    exact_mappings:
+      - dct:rights
+
+  format:
+    is_a: node property
+    domain: information content entity
+    exact_mappings:
+      - dct:format
+      - WIKIDATA_PROPERTY:P2701
+
+  created with:
+    is_a: node property
+    domain: dataset
+    exact_mappings:
+      - pav:createdWith
+
+  download url:
+    is_a: node property
+    domain: information content entity
+    slot_uri: dcat:downloadURL
+
+  dataset download url:
+    is_a: node property
+    domain: dataset
+    slot_uri: dcat:downloadURL
+
+  distribution download url:
+    is_a: node property
+    domain: dataset distribution
+    exact_mappings:
+      - dcat:downloadURL
+
+  ingest date:
+    is_a: node property
+    domain: dataset version
+    slot_uri: pav:version
+
+  has distribution:
+    is_a: node property
+    domain: dataset version
+    range: dataset distribution
+    slot_uri: dct:distribution
+
+  published in:
+    is_a: node property
+    description: >-
+      CURIE identifier of a broader publication context within which the publication may be placed,
+      e.g. a specified book or journal.
+    domain: publication
+    range: uriorcurie
+    values_from:
+      - NLMID
+      - issn
+      - isbn
+    exact_mappings:
+      - WIKIDATA_PROPERTY:P1433
+
+  iso abbreviation:
+    is_a: node property
+    description: >-
+      Standard abbreviation for periodicals in the International Organization for Standardization (ISO) 4 system
+      See https://www.issn.org/services/online-services/access-to-the-ltwa/. If the 'published in' property is set,
+      then the iso abbreviation pertains to the broader publication context (the journal) within which the given
+      publication node is embedded, not the publication itself.
+    domain: publication
+    exact_mappings:
+      - WIKIDATA_PROPERTY:P1160
+
+  authors:
+    is_a: node property
+    singular_name: author
+    description: >-
+      connects an publication to the list of authors who contributed to the publication.
+      This property should be a comma-delimited list of author names. It is recommended that an author's name
+      be formatted as "surname, firstname initial.".   Note that this property is a node annotation expressing
+      the citation list of authorship which might typically otherwise be more completely documented in
+      biolink:PublicationToProviderAssociation defined edges which point to full details about an author
+      and possibly, some qualifiers which clarify the specific status of a given author in the publication.
+    multivalued: true
+    domain: publication
+
+  volume:
+    is_a: node property
+    description: >-
+      volume of a book or music release in a collection/series or a published collection of journal issues in a serial publication
+    domain: publication
+    exact_mappings:
+      - WIKIDATA_PROPERTY:P478
+
+  chapter:
+    is_a: node property
+    description: >-
+      chapter of a book
+    domain: book chapter
+    exact_mappings:
+      - WIKIDATA:Q1980247
+
+  issue:
+    is_a: node property
+    description: >-
+      issue of a newspaper, a scientific journal or magazine for reference purpose
+    domain: publication
+    exact_mappings:
+      - WIKIDATA_PROPERTY:P433
+
+  pages:
+    is_a: node property
+    description: >-
+      page number of source referenced for statement or publication
+    domain: publication
+    multivalued: true
+    exact_mappings:
+      - WIKIDATA_PROPERTY:P304
+
+  summary:
+    is_a: node property
+    # since 'abstract' is a linkML keyword denoting a non-instantiable class or slot,
+    # it is generally recommended that knowledge graphs use 'summary' instead to tag a Publication 'abstract'
+    aliases: ['abstract']
+    description: >-
+      executive  summary of a publication
+    domain: publication
+    exact_mappings:
+      - dct:abstract
+      - WIKIDATA:Q333291
+
+  keywords:
+    is_a: node property
+    description: >-
+      keywords tagging a publication
+    domain: publication
+    multivalued: true
+
+  mesh terms:
+    is_a: node property
+    description: >-
+      mesh terms tagging a publication
+    domain: publication
+    range: uriorcurie
+    values_from:
+      - MESH
+    multivalued: true
+    exact_mappings:
+      - dcid:MeSHTerm
