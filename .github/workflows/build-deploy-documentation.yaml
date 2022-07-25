@@ -42,7 +42,8 @@ jobs:
 
       # generate markdown files
       - run: |
-          make gendoc
+          make clean-docs
+          make gen-docs
           cp css/extra_css.css docs
           cp guidelines/*.md docs
 
