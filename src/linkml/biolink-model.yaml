@@ -2262,36 +2262,6 @@ slots:
     range: chemical or drug or treatment
     domain: disease or phenotypic feature
 
-  increases amount or activity of:
-    is_a: related to at instance level
-    mixin: true
-    description: >-
-      A grouping mixin to help with searching for all the predicates that increase the amount
-      or activity of the object.
-
-  decreases amount or activity of:
-    is_a: related to at instance level
-    mixin: true
-    description: >-
-      A grouping mixin to help with searching for all the predicates that decrease the amount
-      or activity of the object.
-
-  ## role mixins for use in tagging corresponding role predicates
-
-  chemical role mixin:
-    description: >-
-      A role played by the chemical entity or part thereof within a chemical context.
-    mixin: true
-    exact_mappings:
-      - CHEBI:51086
-
-  biological role mixin:
-    description: >-
-      A role played by the chemical entity or part thereof within a biological context.
-    mixin: true
-    narrow_mappings:
-      - CHEBI:24432
-
   affects abundance of:
     deprecated: true
     description: >-
@@ -3767,7 +3737,6 @@ slots:
       may in some cases be considered regulation (if the chemical is some endogenously produced signaling molecule 
       created to execute a certain function/activity), but exogenous/environmental chemical-affects-gene relationships 
       are usually not cases of regulation.
-    mixin: true
     domain: physical essence or occurrent
     range: physical essence or occurrent
     annotations:
@@ -3787,7 +3756,6 @@ slots:
   regulated by:
     domain: physical essence or occurrent
     range: physical essence or occurrent
-    mixin: true
     inverse: regulates
 
   positively regulates:
@@ -6710,40 +6678,6 @@ classes:
 
   ## Ontology Classes
 
-  ontology class:
-    mixin: true
-    slots:
-      - id
-    description: >-
-      a concept or class in an ontology, vocabulary or thesaurus. Note that nodes in
-      a biolink compatible KG can be considered both instances of biolink classes, and
-      OWL classes in their own right. In general you should not need to use this class directly.
-      Instead, use the appropriate biolink class. For example, for the GO concept of endocytosis (GO:0006897),
-      use bl:BiologicalProcess as the type.
-    exact_mappings:
-      - owl:Class
-      - schema:Class
-    comments:
-      - >-
-         This is modeled as a mixin. 'ontology class' should not be the primary type of a
-         node in the KG. Instead you should use an informative bioloink category, such as AnatomicalEntity
-         (for Uberon classes), ChemicalSubstance (for CHEBI or CHEMBL), etc
-      - >-
-         Note that formally this is a metaclass. Instances of this class are instances in the graph,
-         but can be the object of 'type' edges. For example, if we had a node in the graph representing
-         a specific brain of a specific patient (e.g brain001), this could have a category of bl:Sample,
-         and by typed more specifically with an ontology class UBERON:nnn, which has as category bl:AnatomicalEntity
-    see_also:
-      - https://github.com/biolink/biolink-model/issues/486
-    examples:
-      - value: UBERON:0000955
-        description: >-
-          the class 'brain' from the Uberon anatomy ontology
-    id_prefixes:
-      - MESH
-      - UMLS
-      - KEGG.BRITE ## br/ko number
-  
   annotation:
     description: >-
       Biolink Model root class for entity annotations.
@@ -6830,36 +6764,6 @@ classes:
     is_a: attribute
     description: >-
       describes the severity of a phenotypic feature or disease
-
-  relationship quantifier:
-    mixin: true
-
-  sensitivity quantifier:
-    is_a: relationship quantifier
-    mixin: true
-
-  specificity quantifier:
-    is_a: relationship quantifier
-    mixin: true
-
-  pathognomonicity quantifier:
-    is_a: specificity quantifier
-    description: >-
-      A relationship quantifier between a variant or symptom and a disease, which is
-      high when the presence of the feature implies the existence of the disease
-    mixin: true
-
-  frequency quantifier:
-    is_a: relationship quantifier
-    mixin: true
-    slots:
-      - has count
-      - has total
-      - has quotient
-      - has percentage
-
-  chemical or drug or treatment:
-    mixin: true
 
   ## ------
   ## THINGS
@@ -7295,21 +7199,6 @@ classes:
     in_subset:
       - model_organism_database
 
-  ## Top Level Abstractions of Material & Process Entities
-
-  physical essence or occurrent:
-    description: >-
-      Either a physical or processual entity.
-    mixin: true
-
-
-  physical essence:
-    description: >-
-      Semantic mixin concept.  Pertains to entities that have
-      physical properties such as mass, volume, or charge.
-    is_a: physical essence or occurrent
-    mixin: true
-
   physical entity:
     is_a: named thing
     mixins:
@@ -7322,26 +7211,6 @@ classes:
     narrow_mappings:
       # Manufactured Object
       - STY:T073
-
-  occurrent:
-    description: >-
-      A processual entity.
-    # biolink:Occurrent is most consistently used as a mixin thus it should
-    # be declared as such and cannot inherit from the non-mixin biolink:NamedThing
-    is_a: physical essence or occurrent
-    mixin: true
-    exact_mappings:
-      - BFO:0000003
-
-  activity and behavior:
-    is_a: occurrent
-    mixin: true
-    description: >-
-      Activity or behavior of any independent integral living,
-      organization or mechanical actor in the world
-    exact_mappings:
-      # Activities & Behaviors
-      - UMLSSG:ACTI
 
   activity:
     is_a: named thing
@@ -7447,11 +7316,6 @@ classes:
     close_mappings:
       - WIKIDATA:Q7229825
 
-  subject of investigation:
-    mixin: true
-    description: >-
-      An entity that has the role of being studied in an investigation, study, or experiment
-
   material sample:
     aliases: ['biospecimen', 'sample', 'biosample', 'physical sample']
     is_a: physical entity
@@ -7507,17 +7371,6 @@ classes:
     slots:
       - timepoint
 
-  ## Biological Sciences
-
-  thing with taxon:
-    mixin: true
-    description: >-
-      A mixin that can be used on any entity that can be taxonomically classified.
-      This includes individual organisms; genes, their products and other molecular
-      entities; body parts; biological processes
-    slots:
-      - in taxon
-
   biological entity:
     is_a: named thing
     aliases: ['bioentity']
@@ -7530,16 +7383,6 @@ classes:
       - STY:T050
       # SIO term is 'biological entity' but less inclusive than the Biolink scope
       - SIO:010046
-
-  genomic entity:
-    mixin: true
-    slots:
-      - has biological sequence
-    in_subset:
-      - translator_minimal
-    narrow_mappings:
-      - STY:T028   # Gene or Genome
-      - GENO:0000897  # Genomic Entity
 
   molecular entity:
     is_a: chemical entity
@@ -8384,49 +8227,6 @@ classes:
       - NCIT
       - PO
       - FAO
-      
-
-  ## entity mixins
-
-  chemical entity or gene or gene product:
-    description: >-
-      A union of chemical entities and children, and gene or gene product.
-      This mixin is helpful to use when searching across
-      chemical entities that must include genes and their children as chemical entities.
-    mixin: true
-
-  chemical entity or protein or polypeptide:
-    description: >-
-      A union of chemical entities and children, and protein and polypeptide.
-      This mixin is helpful to use when searching across
-      chemical entities that must include genes and their children as chemical entities.
-    mixin: true
-
-  macromolecular machine mixin:
-    description: >-
-      A union of gene locus, gene product, and macromolecular complex mixin. These are
-      the basic units of function in a cell. They either carry out individual
-      biological activities, or they encode molecules which do this.
-    mixin: true
-    slots:
-      - name
-    slot_usage:
-      name:
-        range: symbol type
-        description: >-
-          genes are typically designated by a short symbol and a full name.
-          We map the symbol to the default display name
-          and use an additional slot for full name
-
-  gene or gene product:
-    description: >-
-      A union of gene loci or gene products.
-      Frequently an identifier for one will be used as proxy for another
-    is_a: macromolecular machine mixin
-    mixin: true
-    id_prefixes:
-      - CHEMBL.TARGET
-      - IUPHAR.FAMILY
 
   gene:
     description: >-
@@ -8473,52 +8273,6 @@ classes:
       - UMLS
       - Xenbase
       - AspGD
-    in_subset:
-      - model_organism_database
-
-  gene product mixin:
-    description: >-
-      The functional molecular product of a single gene locus.
-      Gene products are either proteins or functional RNA molecules.
-    is_a: gene or gene product
-    mixin: true
-    slots:
-      - synonym
-      - xref
-    exact_mappings:
-      - WIKIDATA:Q424689
-      - GENO:0000907
-      - NCIT:C26548
-    id_prefixes:
-      - UniProtKB
-      - gtpo
-      - PR
-
-  gene product isoform mixin:
-    description: >-
-      This is an abstract class that can be mixed in with different kinds of
-      gene products to indicate that the gene product is intended to represent
-      a specific isoform rather than a canonical or reference or generic
-      product. The designation of canonical or reference may be arbitrary,
-      or it may represent the superclass of all isoforms.
-    is_a: gene product mixin
-    mixin: true
-
-  macromolecular complex mixin:
-    description: >-
-      A stable assembly of two or more macromolecules, i.e. proteins,
-      nucleic acids, carbohydrates or lipids, in which at least one
-      component is a protein and the constituent parts function together.
-    is_a: macromolecular machine mixin
-    mixin: true
-    exact_mappings:
-      - GO:0032991
-      - WIKIDATA:Q22325163
-    id_prefixes:
-      - INTACT
-      - GO
-      - PR
-      - REACT
     in_subset:
       - model_organism_database
 
@@ -8740,13 +8494,6 @@ classes:
       - WormBase
     in_subset:
       - model_organism_database
-
-  gene grouping mixin:
-    description: >-
-      any grouping of multiple genes or gene products
-    mixin: true
-    slots:
-      - has gene or gene product
 
   gene family:
     aliases: ['orthogroup','protein family']
@@ -9064,20 +8811,6 @@ classes:
 
   ## Exposures
 
-  exposure event:
-    is_a: named thing
-    aliases: ['exposure', 'experimental condition']
-    mixin: true
-    slots:
-      - timepoint
-    description: >-
-      A (possibly time bounded) incidence of a feature of the environment of an organism that
-      influences one or more phenotypic features of that organism, potentially mediated by genes
-    exact_mappings:
-      - XCO:0000000
-    in_subset:
-      - model_organism_database
-
   # TODO - confirm that genomic backgrounds are exposures
   genomic background exposure:
     is_a: attribute
@@ -9092,15 +8825,6 @@ classes:
       A genomic background exposure is where an individual's specific genomic background
       of genes, sequence variants or other pre-existing genomic conditions constitute
       a kind of 'exposure' to the organism, leading to or influencing an outcome.
-
-  pathological entity mixin:
-    description: >-
-      A pathological (abnormal) structure or process.
-    mixin: true
-    exact_mappings:
-      - MPATH:0
-    narrow_mappings:
-      - HP:0000118
 
   pathological process:
     description: >-
@@ -9285,13 +9009,6 @@ classes:
 
   ## Outcomes
 
-  outcome:
-    mixin: true
-    description: >-
-      An entity that has the role of being the consequence of an exposure event.
-      This is an abstract mixin grouping of various categories of possible
-      biological or non-biological (e.g. clinical) outcomes.
-
   pathological process outcome:
     mixins:
       - outcome
@@ -9350,263 +9067,3 @@ classes:
       An general social or economic outcome, such as
       healthcare costs, utilization, etc., resulting from an exposure event
 
-
-  gene expression mixin:
-    description: >-
-      Observed gene expression intensity, context (site, stage) and
-      associated phenotypic status within which the expression occurs.
-    mixin: true
-    slots:
-      - quantifier qualifier
-      - expression site
-      - stage qualifier
-      - phenotypic state
-    slot_usage:
-      quantifier qualifier:
-        description: >-
-          Optional quantitative value indicating degree of expression.
-
-  cell line to entity association mixin:
-    description: >-
-      An relationship between a cell line and another entity
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: cell line
-
-  chemical entity to entity association mixin:
-    description: >-
-      An interaction between a chemical entity and another entity
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: chemical entity or gene or gene product
-        description: "the chemical entity that is an interactor"
-
-  drug to entity association mixin:
-    description: >-
-      An interaction between a drug and another entity
-    is_a: chemical entity to entity association mixin
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: drug
-        description: "the drug that is an interactor"
-
-  chemical to entity association mixin:
-    description: >-
-      An interaction between a chemical entity and another entity
-    is_a: chemical entity to entity association mixin
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: chemical entity or gene or gene product
-        description: "the chemical entity or entity that is an interactor"
-
-  case to entity association mixin:
-    description: >-
-      An abstract association for use where the case is the subject
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: case
-        description: "the case (e.g. patient) that has the property"
-
-  material sample to entity association mixin:
-    description: >-
-      An association between a material sample and something.
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: material sample
-        description: >-
-          the material sample being described
-
-  disease to entity association mixin:
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: disease
-        description: "disease class"
-        values_from: ['mondo', 'omim', 'orphanet', 'ncit', 'doid']
-        examples:
-          - value: MONDO:0017314
-            description: "Ehlers-Danlos syndrome, vascular type"
-
-  entity to exposure event association mixin:
-    description: >-
-      An association between some entity and an exposure event.
-    mixin: true
-    defining_slots:
-      - object
-    slot_usage:
-      object:
-        range: exposure event
-
-
-  exposure event to entity association mixin:
-    deprecated: true
-
-  entity to outcome association mixin:
-    description: >-
-      An association between some entity and an outcome
-    mixin: true
-    defining_slots:
-      - object
-    slot_usage:
-      object:
-        range: outcome
-
-  frequency qualifier mixin:
-    mixin: true
-    description: >-
-      Qualifier for frequency type associations
-    slots:
-      - frequency qualifier
-
-  entity to feature or disease qualifiers mixin:
-    description: >-
-      Qualifiers for entity to disease or phenotype associations.
-    mixin: true
-    is_a: frequency qualifier mixin
-    slots:
-      - severity qualifier
-      - onset qualifier
-
-  entity to phenotypic feature association mixin:
-    mixin: true
-    is_a: entity to feature or disease qualifiers mixin
-    defining_slots:
-      - object
-    slot_usage:
-      object:
-        range: phenotypic feature
-        values_from: ['upheno', 'hp', 'mp', 'wbphenotype']
-        examples:
-          - value: HP:0002487
-            description: Hyperkinesis
-          - value: WBPhenotype:0000180
-            description: axon morphology variant
-          - value: MP:0001569
-            description: abnormal circulating bilirubin level
-    slots:
-      - sex qualifier
-
-  entity to disease association mixin:
-    description: >-
-      mixin class for any association whose object (target node) is a disease
-    mixin: true
-    is_a: entity to feature or disease qualifiers mixin
-    defining_slots:
-      - object
-    slot_usage:
-      object:
-        range: disease
-        description: "disease"
-        examples:
-          - value: MONDO:0020066
-            description: "Ehlers-Danlos syndrome"
-
-  disease or phenotypic feature to entity association mixin:
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: disease or phenotypic feature
-        description: "disease or phenotype"
-        examples:
-          - value: MONDO:0017314
-            description: "Ehlers-Danlos syndrome, vascular type"
-          - value: MP:0013229
-            description: "abnormal brain ventricle size"
-
-  entity to disease or phenotypic feature association mixin:
-    mixin: true
-    defining_slots:
-      - object
-    slot_usage:
-      object:
-        range: disease or phenotypic feature
-        description: "disease or phenotype"
-        examples:
-          - value: MONDO:0017314
-            description: "Ehlers-Danlos syndrome, vascular type"
-          - value: MP:0013229
-            description: "abnormal brain ventricle size"
-
-  genotype to entity association mixin:
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: genotype
-        description: "genotype that is the subject of the association"
-
-  gene to entity association mixin:
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: gene or gene product
-        description: >-
-          gene that is the subject of the association
-
-  variant to entity association mixin:
-    local_names:
-      ga4gh: variant annotation
-    mixin: true
-    defining_slots:
-      - subject
-    slot_usage:
-      subject:
-        range: sequence variant
-        description: >-
-          a sequence variant in which the allele state is associated with some other entity
-        examples:
-          - value: ClinVar:38077
-            description: "ClinVar representation of NM_000059.3(BRCA2):c.7007G>A (p.Arg2336His)"
-          - value: ClinGen:CA024716
-            description: "chr13:g.32921033G>C (hg19) in ClinGen"
-
-  model to disease association mixin:
-    description: >-
-      This mixin is used for any association class for which the subject
-      (source node) plays the role of a 'model', in that it recapitulates some
-      features of the disease in a way that is useful for studying the disease
-      outside a patient carrying the disease
-    mixin: true
-    slot_usage:
-      subject:
-        description: >-
-          The entity that serves as the model of the disease. This may be
-          an organism, a strain of organism, a genotype or variant that exhibits
-          similar features, or a gene that when mutated exhibits features of the disease
-      predicate:
-        subproperty_of: model of
-        description: >-
-          The relationship to the disease
-
-  macromolecular machine to entity association mixin:
-    description: >-
-      an association which has a macromolecular machine mixin as a subject
-    mixin: true
-    slot_usage:
-      subject:
-        domain: macromolecular machine mixin
