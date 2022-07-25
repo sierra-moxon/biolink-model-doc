@@ -1,0 +1,1594 @@
+id: https://w3id.org/biolink/associations
+name: associations
+description: Associations in the Biolink Model
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+default_prefix: biolink
+default_range: string
+
+# 2. The following prefix maps are retrieved from the
+#    specified contexts defined at https://prefixcommons.org/
+default_curi_maps:
+  - obo_context
+  - idot_context
+  - monarch_context
+  - semweb_context
+
+
+
+  ## ------------
+  ## ASSOCIATIONS
+  ## ------------
+
+  association:
+    is_a: entity
+    description: >-
+      A typed association between two entities, supported by evidence
+    comments:
+      - This is roughly the model used by biolink and ontobio at the moment
+    slots:
+      - subject
+      - predicate
+      - object
+      - negated
+      - qualifiers
+      - publications
+      - has evidence
+      - knowledge source
+      - original knowledge source
+      - primary knowledge source
+      - aggregator knowledge source
+      - timepoint
+    slot_usage:
+      type:
+        description: rdf:type of biolink:Association should be fixed at rdf:Statement
+      category:
+        range: category type
+        required: false
+    exact_mappings:
+      - OBAN:association
+      - rdf:Statement
+      - owl:Axiom
+
+
+  chemical entity assesses named thing association:
+    is_a: association
+    slot_usage:
+      subject:
+        range: chemical entity
+      object:
+        range: named thing
+      predicate:
+        subproperty_of: assesses
+
+
+  contributor association:
+    is_a: association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    description: >-
+      Any association between an entity (such as a publication)
+      and various agents that contribute to its realisation
+    slot_usage:
+      subject:
+        range: information content entity
+        description: >-
+          information content entity which an agent has helped realise
+      predicate:
+        subproperty_of: contributor
+        description: >-
+          generally one of the predicate values 'provider', 'publisher', 'editor' or 'author'
+      object:
+        range: agent
+        description: >-
+          agent helping to realise the given entity (e.g. such as a publication)
+      qualifiers:
+        description: >-
+          this field can be used to annotate special characteristics of an
+          agent relationship, such as the fact that a given author agent of
+          a publication is the 'corresponding author'
+
+  genotype to genotype part association:
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      Any association between one genotype and a genotypic entity that is a sub-component of it
+    slot_usage:
+      predicate:
+        subproperty_of: has variant part
+      subject:
+        range: genotype
+        description: >-
+          parent genotype
+      object:
+        range: genotype
+        description: >-
+          child genotype
+
+  genotype to gene association:
+    description: >-
+      Any association between a genotype and a gene.
+      The genotype have have multiple variants in that gene or a single one.
+      There is no assumption of cardinality
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      predicate:
+        description: >-
+          the relationship type used to connect genotype to gene
+      subject:
+        range: genotype
+        description: >-
+          parent genotype
+      object:
+        range: gene
+        description: >-
+          gene implicated in genotype
+
+  genotype to variant association:
+    description: >-
+      Any association between a genotype and a sequence variant.
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      predicate:
+        description: >-
+          the relationship type used to connect genotype to gene
+      subject:
+        range: genotype
+        description: >-
+          parent genotype
+      object:
+        range: sequence variant
+        description: >-
+          gene implicated in genotype
+
+  gene to gene association:
+    aliases: ['molecular or genetic interaction']
+    description: >-
+      abstract parent class for different kinds of gene-gene or gene product
+      to gene product relationships. Includes homology and interaction.
+    abstract: true
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: >-
+          the subject gene in the association. If the relation is symmetric,
+          subject vs object is arbitrary. We allow a gene product to stand
+          as a proxy for the gene or vice versa.
+      object:
+        range: gene or gene product
+        description: >-
+          the object gene in the association. If the relation is symmetric,
+          subject vs object is arbitrary. We allow a gene product to stand
+          as a proxy for the gene or vice versa.
+
+  gene to gene homology association:
+    description: >-
+      A homology association between two genes. May be orthology (in which
+      case the species of subject and object should differ) or paralogy
+      (in which case the species may be the same)
+    is_a: gene to gene association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    slot_usage:
+      subject:
+        range: gene or gene product
+      predicate:
+        subproperty_of: homologous to
+        symmetric: true
+        description: >-
+          homology relationship type
+      object:
+        range: gene or gene product
+
+
+  gene to gene coexpression association:
+    description: >-
+      Indicates that two genes are co-expressed,
+      generally under the same conditions.
+    is_a: gene to gene association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - gene expression mixin
+    slot_usage:
+      predicate:
+        subproperty_of: coexpressed with
+        symmetric: true
+
+  pairwise gene to gene interaction:
+    description: >-
+      An interaction between two genes or two gene products.
+      May be physical (e.g. protein binding) or genetic (between genes).
+      May be symmetric (e.g. protein interaction) or directed (e.g. phosphorylation)
+    is_a: gene to gene association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    slot_usage:
+      predicate:
+        subproperty_of: interacts with
+        symmetric: true
+        description: "interaction relationship type"
+    narrow_mappings:
+      - dcid:ProteinProteinInteraction
+
+  pairwise molecular interaction:
+    description: >-
+      An interaction at the molecular level between two physical entities
+    is_a: pairwise gene to gene interaction
+    slots:
+      - interacting molecules category
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    slot_usage:
+      subject:
+        range: molecular entity
+      id:
+        description: >-
+          identifier for the interaction. This may come from an interaction database such as IMEX.
+        examples:
+          - value: WB:WBInteraction000538741
+        values_from:
+          - IMEX
+          - BioGRID
+      predicate:
+        subproperty_of: interacts with
+        description: "interaction relationship type"
+        examples:
+          - value: RO:0002447
+            description: the subject molecular phosphorylates the object molecule
+      object:
+        range: molecular entity
+
+
+  # TODO: figure out what gives with subject range
+  cell line to disease or phenotypic feature association:
+    is_a: association
+    mixins:
+      - cell line to entity association mixin
+      - entity to disease or phenotypic feature association mixin
+    description: >-
+      An relationship between a cell line and a disease or a phenotype, where
+      the cell line is derived from an individual with that disease or phenotype.
+    slot_usage:
+      subject:
+#        - range: cell line
+#        - range: disease or phenotypic feature
+        range: disease or phenotypic feature
+
+
+  chemical to chemical association:
+    description: >-
+      A relationship between two chemical entities. This can encompass actual
+      interactions as well as temporal causal edges, e.g. one chemical converted to another.
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - chemical to entity association mixin
+    slot_usage:
+      object:
+        range: chemical entity
+        description: "the chemical element that is the target of the statement"
+
+  reaction to participant association:
+    description:
+    is_a: chemical to chemical association
+    slots:
+      - stoichiometry
+      - reaction direction
+      - reaction side
+    slot_usage:
+      subject:
+        range: molecular entity
+    defining_slots:
+      - subject
+      - predicate
+      - object
+
+  reaction to catalyst association:
+    description:
+    is_a: reaction to participant association
+    slot_usage:
+      object:
+        range: gene or gene product
+
+  chemical to chemical derivation association:
+    description: >-
+      A causal relationship between two chemical entities, where the subject
+      represents the upstream entity and the object represents the downstream.
+      For any such association there is an implicit reaction:
+        IF
+        R has-input C1 AND
+        R has-output C2 AND
+        R enabled-by P AND
+        R type Reaction
+        THEN
+        C1 derives-into C2 <<catalyst qualifier P>>
+    is_a: chemical to chemical association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    slots:
+      - catalyst qualifier
+    slot_usage:
+      subject:
+        range: chemical entity
+        description: >-
+          the upstream chemical entity
+      object:
+        range: chemical entity
+        description: >-
+          the downstream chemical entity
+      predicate:
+        subproperty_of: derives into
+      catalyst qualifier:
+        description: >-
+          this connects the derivation edge to the chemical entity that
+          catalyzes the reaction that causes the subject chemical to
+          transform into the object chemical.
+
+  chemical to disease or phenotypic feature association:
+    description: >-
+      An interaction between a chemical entity and a phenotype or disease,
+      where the presence of the chemical gives rise to or exacerbates the phenotype.
+    is_a: association
+    narrow_mappings:
+      - SIO:000993
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - chemical to entity association mixin
+      - entity to disease or phenotypic feature association mixin
+    slot_usage:
+      object:
+        range: disease or phenotypic feature
+        description: "the disease or phenotype that is affected by the chemical"
+
+  gene to pathway association:
+    description: >-
+      An interaction between a gene or gene product and a biological process or pathway.
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - gene to entity association mixin
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: "the gene or gene product entity that participates or influences the pathway"
+      object:
+        range: pathway
+        description: "the pathway that includes or is affected by the gene or gene product"
+
+  molecular activity to pathway association:
+    description: >-
+      Association that holds the relationship between a reaction and the pathway it participates in.
+    is_a: association
+    slot_usage:
+      subject:
+        range: molecular activity
+      object:
+        range: pathway
+      predicate:
+        subproperty_of: part of
+
+  chemical to pathway association:
+    description: >-
+      An interaction between a chemical entity and a biological process or pathway.
+    is_a: association
+    exact_mappings:
+      - SIO:001250
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - chemical to entity association mixin
+    slot_usage:
+      subject:
+        range: chemical entity
+        description: "the chemical entity that is affecting the pathway"
+      object:
+        range: pathway
+        description: "the pathway that is affected by the chemical"
+
+  named thing associated with likelihood of named thing association:
+    # TODO: better name
+    description: >-
+    is_a: association
+    defining_slots:
+      - subject
+      - subject aspect qualifier
+      - subject context qualifier
+      - predicate
+      - object
+      - object aspect qualifier
+      - object context qualifier
+      - population context qualifier
+    slot_usage:
+      predicate:
+        subproperty_of: associated with
+      subject aspect qualifier:
+        # TODO: range
+      subject context qualifier:
+        range: ontology class
+      object aspect qualifier:
+        # TODO: range
+      object context qualifier:
+        range: ontology class
+
+  chemical to gene association:
+    deprecated: true
+    description: >-
+      An interaction between a chemical entity and a gene or gene product.
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - chemical to entity association mixin
+    slot_usage:
+      object:
+        range: gene or gene product
+        description: >-
+          the gene or gene product that is affected by the chemical.
+
+  chemical gene interaction association:
+    description: >-
+      describes a physical interaction between a chemical entity and a gene or gene product. Any biological or chemical
+      effect resulting from such an interaction are out of scope, and covered by the ChemicalAffectsGeneAssociation type
+      (e.g. impact of a chemical on the abundance, activity, structure, etc, of either participant in the interaction)
+    is_a: association
+    exact_mappings:
+      - SIO:001257
+    mixins:
+      - chemical to entity association mixin
+    slots:
+      - subject form or variant qualifier
+      - subject part qualifier
+      - subject derivative qualifier
+      - subject context qualifier
+      - object form or variant qualifier
+      - object part qualifier
+      - object context qualifier
+      - anatomical context qualifier
+    slot_usage:
+      subject:
+        range: chemical entity
+      object:
+        range: gene or gene product
+      predicate:
+        subproperty_of: physically interacts with
+      subject form or variant qualifier:
+        range: chemical_or_gene_or_gene_product_form_enum
+      subject part qualifier:
+        range: gene_or_gene_product_or_chemical_part_qualifier_enum
+      subject derivative qualifier:
+        range: chemical_entity_derivative_enum
+      subject context qualifier:
+        range: anatomical entity
+      object form or variant qualifier:
+        range: chemical_or_gene_or_gene_product_form_enum
+      object part qualifier:
+        range: gene_or_gene_product_or_chemical_part_qualifier_enum
+      object context qualifier:
+        range: anatomical entity
+      anatomical context qualifier:
+        range: anatomical entity
+
+  chemical affects gene association:
+    description: >-
+      Describes an effect that a chemical has on a gene or gene product (e.g. an impact of on its abundance, activity,
+      localization, processing, expression, etc.)
+    is_a: association
+    slots:
+      - subject form or variant qualifier
+      - subject part qualifier
+      - subject derivative qualifier
+      - subject aspect qualifier
+      - subject context qualifier
+      - subject direction qualifier
+      - object form or variant qualifier
+      - object part qualifier
+      - object aspect qualifier
+      - object context qualifier
+      - causal mechanism qualifier
+      - anatomical context qualifier
+      - qualified predicate
+    slot_usage:
+      subject:
+        range: chemical entity
+      subject form or variant qualifier:
+        range: chemical_or_gene_or_gene_product_form_enum
+      subject part qualifier:
+        range: gene_or_gene_product_or_chemical_part_qualifier_enum
+      subject derivative qualifier:
+        range: chemical_entity_derivative_enum
+      subject aspect qualifier:
+        range: gene_or_gene_product_or_chemical_entity_aspect_enum
+      subject context qualifier:
+        range: anatomical entity
+      subject direction qualifier:
+        range: direction_qualifier_enum
+      predicate:
+        subproperty_of: affects
+      qualified predicate:
+        subproperty_of: causes
+      object:
+        range: gene or gene product
+      object form or variant qualifier:
+        range: chemical_or_gene_or_gene_product_form_enum
+      object part qualifier:
+        range: gene_or_gene_product_or_chemical_part_qualifier_enum
+      object aspect qualifier:
+        range: gene_or_gene_product_or_chemical_entity_aspect_enum
+      object context qualifier:
+        range: anatomical entity
+      object direction qualifier:
+        range: direction_qualifier_enum
+      causal mechanism qualifier:
+        range: causal_mechanism_qualifier_enum
+      anatomical context qualifier:
+        range: anatomical entity
+
+  drug to gene association:
+    description: >-
+      An interaction between a drug and a gene or gene product.
+    is_a: association
+    related_mappings:
+      - SIO:001257
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - drug to entity association mixin
+    slot_usage:
+      object:
+        range: gene or gene product
+        description: "the gene or gene product that is affected by the drug"
+
+
+
+  material sample derivation association:
+    description: >-
+      An association between a material sample and
+      the material entity from which it is derived.
+    is_a: association
+    defining_slots:
+      - subject
+      - predicate
+    slot_usage:
+      subject:
+        range: material sample
+        description: >-
+          the material sample being described
+      object:
+        description: >-
+          the material entity the sample was derived from. This may be another
+          material sample, or any other material entity, including for example
+          an organism, a geographic feature, or some environmental material.
+      predicate:
+        description: >-
+          derivation relationship
+        subproperty_of: derives from
+
+  material sample to disease or phenotypic feature association:
+    description: >-
+      An association between a material sample and a disease or phenotype.
+    is_a: association
+    mixins:
+      - material sample to entity association mixin
+      - entity to disease or phenotypic feature association mixin
+    defining_slots:
+      - subject
+      - object
+
+  exposure event to outcome association:
+    description: >-
+      An association between an exposure event and an outcome.
+    is_a: association
+    mixins:
+      - exposure event to entity association mixin
+      - entity to outcome association mixin
+    slots:
+      - has population context
+      - has temporal context
+    defining_slots:
+      - subject
+      - object
+
+  disease to exposure event association:
+    description: >-
+      An association between an exposure event and a disease.
+    is_a: association
+    mixins:
+      - disease to entity association mixin
+      - entity to exposure event association mixin
+    defining_slots:
+      - subject
+      - object
+
+
+  information content entity to named thing association:
+    description: >-
+      association between a named thing and a information content entity where the specific context
+      of the relationship between that named thing and the publication is unknown. For
+      example, model organisms databases often capture the knowledge that a gene is found in a
+      journal article, but not specifically the context in which that gene was documented in the article.
+      In these cases, this association with the accompanying predicate 'mentions' could be used.
+      Conversely, for more specific associations (like 'gene to disease association', the publication should
+      be captured as an edge property).
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      subject:
+        domain: publication
+      object:
+        range: named thing
+      predicate:
+        subproperty_of: mentions
+    in_subset:
+      - model_organism_database
+
+  disease or phenotypic feature to location association:
+    description: >-
+      An association between either a disease or a phenotypic feature and
+      an anatomical entity, where the disease/feature manifests in that site.
+    is_a: association
+    mixins:
+      - disease or phenotypic feature to entity association mixin
+    slot_usage:
+      object:
+        range: anatomical entity
+        description: >-
+          anatomical entity in which the disease or feature is found.
+        examples:
+          - value: UBERON:0002048
+            description: "lung"
+
+
+  genotype to phenotypic feature association:
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      Any association between one genotype and a phenotypic feature, where having
+      the genotype confers the phenotype, either in isolation or through environment
+    mixins:
+      - entity to phenotypic feature association mixin
+      - genotype to entity association mixin
+    slot_usage:
+      predicate:
+        subproperty_of: has phenotype
+      subject:
+        range: genotype
+        description: >-
+          genotype that is associated with the phenotypic feature
+
+  # ie: smoke exposure to coughing phenotype? is this a denormalization?
+  exposure event to phenotypic feature association:
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      Any association between an environment and a phenotypic feature,
+      where being in the environment influences the phenotype.
+    mixins:
+      - entity to phenotypic feature association mixin
+    slot_usage:
+      subject:
+        range: exposure event
+
+  disease to phenotypic feature association:
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      An association between a disease and a phenotypic feature in which the
+      phenotypic feature is associated with the disease in some way.
+    mixins:
+      - entity to phenotypic feature association mixin
+      - disease to entity association mixin
+    close_mappings:
+      - dcid:DiseaseSymptomAssociation
+    slot_usage:
+      subject:
+        range: disease
+      object:
+        range: phenotypic feature
+
+  case to phenotypic feature association:
+    description: >-
+      An association between a case (e.g. individual patient) and a phenotypic
+      feature in which the individual has or has had the phenotype.
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - entity to phenotypic feature association mixin
+      - case to entity association mixin
+
+  behavior to behavioral feature association:
+    description: >-
+      An association between an mixture behavior and
+      a behavioral feature manifested by
+      the individual exhibited or has exhibited the behavior.
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      subject:
+        range: behavior
+        description: >-
+          behavior that is the subject of the association
+      object:
+        range: behavioral feature
+        description: >-
+          behavioral feature that is the object of the association
+    mixins:
+      - entity to phenotypic feature association mixin
+
+
+  gene to phenotypic feature association:
+    is_a: association
+    exact_mappings:
+      - WBVocab:Gene-Phenotype-Association
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - entity to phenotypic feature association mixin
+      - gene to entity association mixin
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: "gene in which variation is correlated with the phenotypic feature"
+        examples:
+          - value: HGNC:2197
+            description: "COL1A1 (Human)"
+      object:
+        range: phenotypic feature
+
+  gene to disease association:
+    is_a: association
+    comments:
+      - NCIT:R176 refers to the inverse relationship
+    exact_mappings:
+      - SIO:000983
+    close_mappings:
+      - dcid:DiseaseGeneAssociation
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - entity to disease association mixin
+      - gene to entity association mixin
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: >-
+          gene in which variation is correlated with the disease,
+          may be protective or causative or associative, or as a model
+      object:
+        range: disease
+
+  druggable gene to disease association:
+    is_a: gene to disease association
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: >-
+          gene in which variation is correlated with the disease
+          in a protective manner, or if the product produced by the gene can be targeted by a small molecule and
+          this leads to a protective or improving disease state.
+      predicate:
+        subproperty_of: target for
+      has evidence:
+        range: druggable_gene_category_enum
+    defining_slots:
+      - subject
+      - object
+      - predicate
+    mixins:
+      - entity to disease association mixin
+      - gene to entity association mixin
+
+  variant to gene association:
+    description: >-
+      An association between a variant and a gene, where the variant has
+      a genetic association with the gene (i.e. is in linkage disequilibrium)
+    is_a: association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - variant to entity association mixin
+    slot_usage:
+      object:
+        range: gene
+      predicate:
+        subproperty_of: genetic association
+
+  variant to gene expression association:
+    description: >-
+      An association between a variant and expression of a gene (i.e. e-QTL)
+    is_a: variant to gene association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - gene expression mixin
+    slot_usage:
+      predicate:
+        subproperty_of: affects expression of
+
+  variant to population association:
+    description: >-
+      An association between a variant and a population, where the variant has
+      particular frequency in the population
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - variant to entity association mixin
+      - frequency quantifier
+      - frequency qualifier mixin
+    slot_usage:
+      subject:
+        range: sequence variant
+        description: >-
+          an allele that has a certain frequency in a given population
+        examples:
+          - value: "NC_000017.11:g.43051071A>T"
+            description: >-
+              17:41203088 A/C in gnomad
+      object:
+        range: population of individual organisms
+        description: >-
+          the population that is observed to have the frequency
+        examples:
+          - value: HANCESTRO:0010
+            description: African
+      has quotient:
+        description: >-
+          frequency of allele in population, expressed as a number with allele
+          divided by number in reference population, aka allele frequency
+        examples:
+          - value: "0.0001666"
+      has count:
+        description: >-
+          number in object population that carry a particular allele, aka allele count
+        examples:
+          - value: "4"
+            description: 4 individuals in gnomad set
+      has total:
+        description: >-
+          number all populations that carry a particular allele, aka allele number
+        examples:
+          - value: "24014"
+            description: 24014 individuals in gnomad set
+
+  population to population association:
+    description: >-
+      An association between a two populations
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      subject:
+        range: population of individual organisms
+        description: >-
+          the population that form the subject of the association
+      object:
+        range: population of individual organisms
+        description: >-
+          the population that form the object of the association
+      predicate:
+        # subproperty_of: ???
+        description: >-
+          A relationship type that holds between the subject and object
+          populations. Standard mereological relations can be used.
+          E.g. subject part-of object, subject overlaps object.
+          Derivation relationships can also be used
+
+  variant to phenotypic feature association:
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - variant to entity association mixin
+      - entity to phenotypic feature association mixin
+    slot_usage:
+      subject:
+        range: sequence variant
+        description: >-
+          a sequence variant in which the allele state is
+          associated in some way with the phenotype state
+
+  variant to disease association:
+    is_a: association
+    comments:
+      - TODO decide no how to model pathogenicity
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - variant to entity association mixin
+      - entity to disease association mixin
+    slot_usage:
+      subject:
+        description: >-
+          a sequence variant in which the allele state
+          is associated in some way with the disease state
+        examples:
+          - value: ClinVar:52241
+            description: "NM_000059.3(BRCA2):c.7007G>C (p.Arg2336Pro)"
+      predicate:
+        description: >-
+          E.g. is pathogenic for
+        subproperty_of: related condition
+      object:
+        description: >-
+          a disease that is associated with that variant
+        examples:
+          - value: MONDO:0016419
+            description: hereditary breast cancer
+
+  genotype to disease association:
+    is_a: association
+    comments:
+      - TODO decide no how to model pathogenicity
+    defining_slots:
+      - subject
+      - object
+    mixins:
+      - genotype to entity association mixin
+      - entity to disease association mixin
+    slot_usage:
+      subject:
+        description: >-
+          a genotype that is associated in some way with a disease state
+      predicate:
+        description: >-
+          E.g. is pathogenic for
+        subproperty_of: related condition
+      object:
+        description: >-
+          a disease that is associated with that genotype
+        examples:
+          - value: MONDO:0016419
+            description: hereditary breast cancer
+
+
+  gene as a model of disease association:
+    is_a: gene to disease association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - model to disease association mixin
+      - entity to disease association mixin
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: >-
+          A gene that has a role in modeling the disease. This may be a model
+          organism ortholog of a known disease gene, or it may be a gene whose
+          mutants recapitulate core features of the disease.
+
+  variant as a model of disease association:
+    is_a: variant to disease association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - model to disease association mixin
+      - entity to disease association mixin
+    slot_usage:
+      subject:
+        range: sequence variant
+        description: >-
+          A variant that has a role in modeling the disease.
+
+  genotype as a model of disease association:
+    is_a: genotype to disease association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - model to disease association mixin
+      - entity to disease association mixin
+    slot_usage:
+      subject:
+        range: genotype
+        description: >-
+          A genotype that has a role in modeling the disease.
+
+  cell line as a model of disease association:
+    is_a: cell line to disease or phenotypic feature association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - model to disease association mixin
+      - entity to disease association mixin
+    slot_usage:
+      subject:
+        range: cell line
+        description: >-
+          A cell line derived from an organismal entity with a disease state that is used
+          as a model of that disease.
+
+  organismal entity as a model of disease association:
+    is_a: association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    mixins:
+      - model to disease association mixin
+      - entity to disease association mixin
+    slot_usage:
+      subject:
+        range: organismal entity
+        description: >-
+          A organismal entity (strain, breed) with a predisposition to a disease, or bred/created
+          specifically to model a disease.
+
+  organism to organism association:
+    is_a: association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    slot_usage:
+      subject:
+        range: individual organism
+      object:
+        range: individual organism
+        description: >-
+          An association between two individual organisms.
+
+  taxon to taxon association:
+    is_a: association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    slot_usage:
+      subject:
+        range: organism taxon
+      object:
+        range: organism taxon
+        description: >-
+          An association between individuals of different taxa.
+
+  gene has variant that contributes to disease association:
+    is_a: gene to disease association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    slots:
+      - sequence variant qualifier
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: >-
+          A gene that has a role in modeling the disease. This may be
+          a model organism ortholog of a known disease gene, or it may be
+          a gene whose mutants recapitulate core features of the disease.
+
+  gene to expression site association:
+    is_a: association
+    defining_slots:
+      - subject
+      - predicate
+      - object
+    description: >-
+      An association between a gene and a gene expression site,
+      possibly qualified by stage/timing info.
+    notes:
+      - "TBD: introduce subclasses for distinction between wild-type and experimental conditions?"
+    see_also: "https://github.com/monarch-initiative/ingest-artifacts/tree/master/sources/BGee"
+    slots:
+      - stage qualifier
+      - quantifier qualifier
+    slot_usage:
+      subject:
+        range: gene or gene product
+        description: >-
+          Gene or gene product positively within the specified
+          anatomical entity (or subclass, i.e. cellular component) location.
+      object:
+        range: anatomical entity
+        description: "location in which the gene is expressed"
+        examples:
+          - value: UBERON:0002037
+            description: cerebellum
+      predicate:
+        description: "expression relationship"
+        subproperty_of: expressed in
+      stage qualifier:
+        range: life stage
+        description: "stage at which the gene is expressed in the site"
+        examples:
+          - value: UBERON:0000069
+            description: larval stage
+      quantifier qualifier:
+        description: >-
+          can be used to indicate magnitude, or also ranking
+
+  sequence variant modulates treatment association:
+    is_a: association
+    description: >-
+      An association between a sequence variant and a treatment or health intervention.
+      The treatment object itself encompasses both the disease and the drug used.
+    comments:
+      - An alternate way to model the same information could be via a qualifier
+    defining_slots:
+      - subject
+      - object
+    abstract: true
+    slot_usage:
+      subject:
+        range: sequence variant
+        description: "variant that modulates the treatment of some disease"
+      object:
+        range: treatment
+        description: "treatment whose efficacy is modulated by the subject variant"
+
+  functional association:
+    is_a: association
+    description: >-
+      An association between a macromolecular machine mixin (gene, gene product or
+      complex of gene products) and either a molecular activity, a biological
+      process or a cellular location in which a function is executed.
+    slot_usage:
+      subject:
+        range: macromolecular machine mixin
+        description: >-
+          gene, product or macromolecular complex mixin that
+          has the function associated with the GO term
+        examples:
+          - value: ZFIN:ZDB-GENE-050417-357
+            description: twist1b
+      object:
+        range: gene ontology class
+        description: >-
+          class describing the activity, process or
+          localization of the gene product
+        values_from:
+          - go
+        examples:
+          - value: GO:0016301
+            description: kinase activity
+          - value: GO:0045211
+            description: postsynaptic membrane
+
+
+  macromolecular machine to molecular activity association:
+    description: >-
+      A functional association between a macromolecular machine (gene,
+      gene product or complex) and a molecular activity (as represented
+      in the GO molecular function branch), where the entity
+      carries out the activity, or contributes to its execution.
+    is_a: functional association
+    mixins:
+      - macromolecular machine to entity association mixin
+    slot_usage:
+      object:
+        range: molecular activity
+
+  macromolecular machine to biological process association:
+    description: >-
+      A functional association between a macromolecular machine (gene,
+      gene product or complex) and a biological process or pathway
+      (as represented in the GO biological process branch), where the entity
+      carries out some part of the process, regulates it, or acts upstream of it.
+    is_a: functional association
+    mixins:
+      - macromolecular machine to entity association mixin
+    slot_usage:
+      object:
+        range: biological process
+
+  macromolecular machine to cellular component association:
+    description: >-
+      A functional association between a macromolecular machine (gene,
+      gene product or complex) and a cellular component (as represented
+      in the GO cellular component branch), where the entity
+      carries out its function in the cellular component.
+    is_a: functional association
+    mixins:
+      - macromolecular machine to entity association mixin
+    slot_usage:
+      object:
+        range: cellular component
+
+  molecular activity to chemical entity association:
+    is_a: association
+    description: >-
+      Added in response to capturing relationship between microbiome activities as measured via
+      measurements of blood analytes as collected via blood and stool samples
+    slot_usage:
+      subject:
+        range: molecular activity
+      object:
+        range: chemical entity
+
+  molecular activity to molecular activity association:
+    is_a: association
+    description: >-
+      Added in response to capturing relationship between microbiome activities as measured via
+      measurements of blood analytes as collected via blood and stool samples
+    slot_usage:
+      subject:
+        range: molecular activity
+      object:
+        range: molecular activity
+
+
+  gene to go term association:
+    aliases: ['functional association']
+    is_a: functional association
+    exact_mappings:
+      - WBVocab:Gene-GO-Association
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      subject:
+        range: gene
+        description: >-
+          gene, product or macromolecular complex that has
+          the function associated with the GO term
+        examples:
+          - value: ZFIN:ZDB-GENE-050417-357
+            description: twist1b
+      object:
+        range: gene ontology class
+        description: >-
+          class describing the activity, process or
+          localization of the gene product
+        values_from:
+          - go
+        examples:
+          - value: GO:0016301
+            description: kinase activity
+
+  entity to disease association:
+    is_a: association
+    exact_mappings:
+    slots:
+      - FDA approval status
+    defining_slots:
+      - subject
+      - object
+
+  entity to phenotypic feature association:
+    is_a: association
+    exact_mappings:
+    slots:
+      - FDA approval status
+    defining_slots:
+      - subject
+      - object
+
+  ## -----------------
+  ## SEQUENCE FEATURES
+  ## -----------------
+
+  sequence association:
+    is_a: association
+    description: >-
+      An association between a sequence feature and a nucleic acid entity it is localized to.
+
+  genomic sequence localization:
+    is_a: sequence association
+    description: >-
+      A relationship between a sequence feature and a nucleic acid entity
+      it is localized to. The reference entity may be a chromosome,
+      chromosome region or information entity such as a contig.
+    slot_usage:
+      subject:
+        aliases: ['sequence feature']
+        range: nucleic acid entity
+      object:
+        aliases: ['reference']
+        range: nucleic acid entity # typically a chromosome use monochrom
+      predicate:
+        subproperty_of: has sequence location
+    slots:
+      - start interbase coordinate
+      - end interbase coordinate
+      - genome build
+      - strand
+      - phase
+    broad_mappings:
+      - dcid:Chromosome
+    exact_mappings:
+      - dcid:GenomeAnnotation
+
+  sequence feature relationship:
+    is_a: association
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      For example, a particular exon is part of a particular transcript or gene
+    slot_usage:
+      subject:
+        range: nucleic acid entity
+      object:
+        range: nucleic acid entity # typically a chromosome
+    exact_mappings:
+      - CHADO:feature_relationship
+
+  transcript to gene relationship:
+    is_a: sequence feature relationship
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      A gene is a collection of transcripts
+    slot_usage:
+      subject:
+        range: transcript
+      object:
+        range: gene
+
+  gene to gene product relationship:
+    is_a: sequence feature relationship
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      A gene is transcribed and potentially translated to a gene product
+    slot_usage:
+      subject:
+        range: gene
+      object:
+        range: gene product mixin
+      predicate:
+        subproperty_of: has gene product
+
+  exon to transcript relationship:
+    is_a: sequence feature relationship
+    defining_slots:
+      - subject
+      - object
+    description: >-
+      A transcript is formed from multiple exons
+    slot_usage:
+      subject:
+        range: exon
+      object:
+        range: transcript
+
+  gene regulatory relationship:
+    deprecated: true
+    is_a: association
+    description: >-
+      A regulatory relationship between two genes
+    slot_usage:
+      predicate:
+        description: >-
+          the direction is always from regulator to regulated
+      subject:
+        range: gene or gene product
+        role: regulatory gene
+      object:
+        range: gene or gene product
+        role: regulated gene
+
+  chemical entity or gene or gene product regulates gene association:
+    is_a: association
+    description: >-
+      A regulatory relationship between two genes
+    slots:
+      - object direction qualifier
+    slot_usage:
+      predicate:
+        description: >-
+          the direction is always from regulator to regulated
+        subproperty_of: regulates
+      subject:
+        range: chemical entity or gene or gene product
+        role: regulatory gene
+      object:
+        range: gene or gene product
+        role: regulated gene
+      object direction qualifier:
+        range: direction_qualifier_enum
+
+  anatomical entity to anatomical entity association: # schema: gocam
+    is_a: association
+    abstract: true
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      subject:
+        range: anatomical entity
+      object:
+        range: anatomical entity
+
+  anatomical entity to anatomical entity part of association:
+#      schema: gocam
+    is_a: anatomical entity to anatomical entity association
+    description: >-
+      A relationship between two anatomical entities where the relationship
+      is mereological, i.e the two entities are related by parthood. This
+      includes relationships between cellular components and cells, between
+      cells and tissues, tissues and whole organisms
+    defining_slots:
+      - predicate
+    slot_usage:
+      subject:
+        range: anatomical entity
+        description: >-
+          the part
+      object:
+        range: anatomical entity
+        description: >-
+          the whole
+      predicate:
+        subproperty_of: part of
+
+  anatomical entity to anatomical entity ontogenic association:
+    is_a: anatomical entity to anatomical entity association
+    description: >-
+      A relationship between two anatomical entities where the relationship
+      is ontogenic, i.e. the two entities are related by development. A number
+      of different relationship types can be used to specify the precise
+      nature of the relationship.
+    defining_slots:
+      - predicate
+    slot_usage:
+      subject:
+        range: anatomical entity
+        description: >-
+          the structure at a later time
+      object:
+        range: anatomical entity
+        description: >-
+          the structure at an earlier time
+      predicate:
+         subproperty_of: develops from
+
+  organism taxon to entity association:
+    mixin: true
+    description: >-
+      An association between an organism taxon and another entity
+    defining_slots:
+      - subject
+    slot_usage:
+      subject:
+        range: organism taxon
+        description: >-
+          organism taxon that is the subject of the association
+
+  organism taxon to organism taxon association:
+    is_a: association
+    abstract: true
+    mixins:
+      - organism taxon to entity association
+    description: >-
+      A relationship between two organism taxon nodes
+    defining_slots:
+      - subject
+      - object
+    slot_usage:
+      subject:
+        range: organism taxon
+      object:
+        range: organism taxon
+
+  organism taxon to organism taxon specialization:
+    is_a: organism taxon to organism taxon association
+    description: >-
+      A child-parent relationship between two taxa.
+      For example: Homo sapiens subclass_of Homo
+    defining_slots:
+      - predicate
+    slot_usage:
+      subject:
+        range: organism taxon
+        role: child taxon
+        description: >-
+          the more specific taxon
+      object:
+        range: organism taxon
+        role: parent taxon
+        description: >-
+          the more general taxon
+      predicate:
+         subproperty_of: subclass of
+
+  organism taxon to organism taxon interaction:
+    is_a: organism taxon to organism taxon association
+    description: >-
+      An interaction relationship between two taxa. This may be a symbiotic
+      relationship (encompassing mutualism and parasitism), or it may be non-symbiotic.
+      Example: plague transmitted_by flea; cattle domesticated_by Homo sapiens; plague infects Homo sapiens
+    defining_slots:
+      - predicate
+    slots:
+      - associated environmental context
+    slot_usage:
+      subject:
+        range: organism taxon
+        role: interactor taxon
+        description: >-
+          the taxon that is the subject of the association
+      object:
+        range: organism taxon
+        role: interactee taxon
+        description: >-
+          the taxon that is the subject of the association
+      predicate:
+         subproperty_of: interacts with
+      associated environmental context:
+         description: >-
+           the environment in which the two taxa interact
+
+  organism taxon to environment association:
+    is_a: association
+    abstract: true
+    mixins:
+      - organism taxon to entity association
+    slot_usage:
+      subject:
+        range: organism taxon
+        role: interactor taxon
+        description: >-
+          the taxon that is the subject of the association
+      object:
+        role: environmental context
+        description: >-
+          the environment in which the organism occurs
+      predicate:
+        description: >-
+          predicate describing the relationship between the taxon and the environment

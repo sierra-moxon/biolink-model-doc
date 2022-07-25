@@ -1,14 +1,15 @@
 [tool.poetry]
-name = "linkml-project-template"
-version = "0.1.0"
-description = "Enter description of your project here"
-authors = ["Mark A. Miller <mamillerpa@gmail.com>"]
+name = "biolink-model"
+version = "3.1.0"
+description = "A high level datamodel of biological entities and associations"
+authors = ["Sierra Moxon smoxon@lbl.gov, Deepak Unni, Chris Mungall cmungall@lbl.gov"]
 license = "MIT"
 include = ["README.md", "src/linkml", "project"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 linkml-runtime = "^1.1.24"
+mkdocs-mermaid2-plugin = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 linkml = "^1.2.6"
