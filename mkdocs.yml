@@ -17,6 +17,8 @@ nav:
   - Updating: curating-the-model.md
   - Maintaining The Model: maintaining-the-model.md
   - FAQ: faq.md
+  - Mapping to RDF: mapping-rdf.md
+  - Mapping to Neo4j: mapping-neo4j.md
 
 
 site_url: https://sierra-moxon.github.io/biolink-model-doc/
