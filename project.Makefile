@@ -14,3 +14,7 @@ gen-docs:
 	cp README.md docs/
 	cp images/biolink-logo.png docs/
 	cp -pr guidelines/* docs/
+
+gen-oldschool:
+	poetry run gen-yaml --generate $(SOURCE_SCHEMA_PATH) > biolink-model.yaml
+
