@@ -16,28 +16,15 @@ default_curi_maps:
 
 imports:
   - core
+  - epc
 
 # note: mixins are classes
 classes:
 
   physical essence or occurrent:
     description: >-
-      Either a physical or processual entity.
+      Either a physical or process entity.
     mixin: true
-
-  increases amount or activity of:
-    is_a: related to at instance level
-    mixin: true
-    description: >-
-      A grouping mixin to help with searching for all the predicates that increase the amount
-      or activity of the object.
-
-  decreases amount or activity of:
-    is_a: related to at instance level
-    mixin: true
-    description: >-
-      A grouping mixin to help with searching for all the predicates that decrease the amount
-      or activity of the object.
 
   ## role mixins for use in tagging corresponding role predicates
 
@@ -54,35 +41,6 @@ classes:
     mixin: true
     narrow_mappings:
       - CHEBI:24432
-
-  regulates:
-    is_a: affects
-    description: >-
-      A more specific form of affects, that implies the effect results from a biologically evolved control mechanism.
-      Gene-affects-gene relationships will (almost) always involve regulation.  Chemical-affects-gene relationships 
-      may in some cases be considered regulation (if the chemical is some endogenously produced signaling molecule 
-      created to execute a certain function/activity), but exogenous/environmental chemical-affects-gene relationships 
-      are usually not cases of regulation.
-    domain: physical essence or occurrent
-    range: physical essence or occurrent
-    annotations:
-      canonical_predicate: true
-    close_mappings:
-      - RO:0002334
-    exact_mappings:
-      - RO:0002211
-    narrow_mappings:
-      # https://www.wikidata.org/wiki/Property:P128 - regulates (molecular biology)
-      - WIKIDATA_PROPERTY:P128
-      - CHEMBL.MECHANISM:modulator
-      - RO:0002295
-      - RO:0002332
-      - RO:0002578
-
-  regulated by:
-    domain: physical essence or occurrent
-    range: physical essence or occurrent
-    inverse: regulates
 
   ontology class:
     mixin: true
@@ -117,36 +75,6 @@ classes:
       - MESH
       - UMLS
       - KEGG.BRITE ## br/ko number
-
-  relationship quantifier:
-    mixin: true
-
-  sensitivity quantifier:
-    is_a: relationship quantifier
-    mixin: true
-
-  specificity quantifier:
-    is_a: relationship quantifier
-    mixin: true
-
-  pathognomonicity quantifier:
-    is_a: specificity quantifier
-    description: >-
-      A relationship quantifier between a variant or symptom and a disease, which is
-      high when the presence of the feature implies the existence of the disease
-    mixin: true
-
-  frequency quantifier:
-    is_a: relationship quantifier
-    mixin: true
-    slots:
-      - has count
-      - has total
-      - has quotient
-      - has percentage
-
-  chemical or drug or treatment:
-    mixin: true
 
  ## Top Level Abstractions of Material & Process Entities
 
@@ -591,3 +519,49 @@ classes:
     slot_usage:
       subject:
         domain: macromolecular machine mixin
+
+  frequency quantifier:
+    is_a: relationship quantifier
+    mixin: true
+    slots:
+      - has count
+      - has total
+      - has quotient
+      - has percentage
+
+slots:
+
+  increases amount or activity of:
+    is_a: related to at instance level
+    mixin: true
+    description: >-
+      A grouping mixin to help with searching for all the predicates that increase the amount
+      or activity of the object.
+
+  decreases amount or activity of:
+    is_a: related to at instance level
+    mixin: true
+    description: >-
+      A grouping mixin to help with searching for all the predicates that decrease the amount
+      or activity of the object.
+
+  relationship quantifier:
+    mixin: true
+
+  sensitivity quantifier:
+    is_a: relationship quantifier
+    mixin: true
+
+  specificity quantifier:
+    is_a: relationship quantifier
+    mixin: true
+
+  pathognomonicity quantifier:
+    is_a: specificity quantifier
+    description: >-
+      A relationship quantifier between a variant or symptom and a disease, which is
+      high when the presence of the feature implies the existence of the disease
+    mixin: true
+
+  chemical or drug or treatment:
+    mixin: true

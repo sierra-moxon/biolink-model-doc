@@ -158,7 +158,7 @@ imports:
   - core
   - enums
   - qualifiers
-  - predicates-and-associations
+  - predicatesAndAssociations
   - mixins
 
 slots:

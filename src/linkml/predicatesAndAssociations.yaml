@@ -1,6 +1,6 @@
-id: https://w3id.org/biolink/predicates_and_associations
-name: predicates_and_associations
-description: Associations in the Biolink Model
+id: https://w3id.org/biolink/predicatesAndAssociations
+name: predicatesAndAssociations
+description: Predicates and Associations in the Biolink Model
 license: https://creativecommons.org/publicdomain/zero/1.0/
 
 default_prefix: biolink
@@ -17,6 +17,7 @@ default_curi_maps:
 imports:
   - core
   - mixins
+  - epc
 
   ## ------------
   ## ASSOCIATIONS
@@ -6466,3 +6467,5 @@ slots:
     is_a: related to at instance level
     domain: ontology class
     inverse: has molecular consequence
+
+
