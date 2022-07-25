@@ -16,9 +16,7 @@ gen-docs:
 	cp -pr guidelines/* docs/
 
 gen-oldschool:
-	poetry run gen-yaml --generate $(SOURCE_SCHEMA_PATH) > biolink-model.yaml
 
+gen-yaml:
+	poetry run gen-linkml
 
-gh-deploy:
-# deploy documentation (note: requires documentation is in docs dir)
-	poetry run mkdocs gh-deploy --remote-branch gh-pages --force

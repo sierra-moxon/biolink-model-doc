@@ -2,10 +2,6 @@
 
 {{ element.description }}
 
-{% if element.comments -%}}
-{{element.comments}}
-{% endif -%}}
-
 {% if schemaview.class_parents(element.name) %}
 ```mermaid
  classDiagram
@@ -35,9 +31,6 @@
       {% endfor %}
 ```
 {% endif %}
-
-
-URI: {{ gen.uri_link(element) }}
 
 ## Parent Classes
 {% if schemaview.class_parents(element.name) %}
