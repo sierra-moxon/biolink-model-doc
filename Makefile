@@ -14,6 +14,7 @@ SRC = src
 DEST = project
 PYMODEL = $(SRC)/$(SCHEMA_NAME)/datamodel
 DOCDIR = docs
+DOC_TEMP_DIR = src/doc-templates
 
 # basename of a YAML file in model/
 .PHONY: all clean
@@ -46,10 +47,10 @@ deploy: all mkd-gh-deploy
 
 # generates all project files
 gen-project: $(PYMODEL)
-	$(RUN) gen-project -d $(DEST) $(SOURCE_SCHEMA_PATH) && mv $(DEST)/*.py $(PYMODEL)
+	$(RUN) gen-project --exclude markdown --exclude excel -d $(DEST) $(SOURCE_SCHEMA_PATH) && mv $(DEST)/*.py $(PYMODEL)
 
 test:
-	$(RUN) gen-project -d tmp $(SOURCE_SCHEMA_PATH) 
+	$(RUN) gen-project --exclude markdown --exclude excel -d tmp $(SOURCE_SCHEMA_PATH)
 
 upgrade:
 	poetry add -D linkml@latest
@@ -65,8 +66,7 @@ $(DOCDIR):
 	mkdir -p $@
 
 gendoc: $(DOCDIR)
-	cp $(SRC)/docs/*md $(DOCDIR) ; \
-	$(RUN) gen-doc -d $(DOCDIR) $(SOURCE_SCHEMA_PATH)
+	$(RUN) gen-doc --directory $(DOCDIR) --template-directory $(DOC_TEMP_DIR) $(SOURCE_SCHEMA_PATH)
 
 testdoc: gendoc serve
 
@@ -74,7 +74,7 @@ MKDOCS = $(RUN) mkdocs
 mkd-%:
 	$(MKDOCS) $*
 
-PROJECT_FOLDERS = sqlschema shex shacl protobuf prefixmap owl jsonschema jsonld graphql excel
+PROJECT_FOLDERS = sqlschema shex shacl protobuf prefixmap owl jsonschema jsonld graphql excel pydantic
 
 clean:
 	rm -rf $(DEST)
