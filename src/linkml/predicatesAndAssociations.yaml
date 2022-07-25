@@ -1770,6 +1770,21 @@ slots:
       - RO:0004029
       - SNOMEDCT:47429007
 
+  diagnoses:
+    is_a: related to at instance level
+    description: >-
+      a relationship that identifies the nature of (an illness or other problem) by examination of the symptoms.
+    domain: chemical or drug or treatment
+    range: disease or phenotypic feature
+    annotations:
+      canonical_predicate: true
+    close_mappings:
+      - NCIT:C15220 # diagnosis
+      - SIO:001331 # diagnosis
+    exact_mappings:
+      - DrugCentral:5271
+      - SEMMEDDB:diagnoses
+
   superclass of:
     is_a: related to at concept level
     description: >-
@@ -2433,21 +2448,6 @@ slots:
     inverse: associated with resistance to
     range: named thing
     domain: chemical entity
-
-  diagnoses:
-    is_a: related to at instance level
-    description: >-
-      a relationship that identifies the nature of (an illness or other problem) by examination of the symptoms.
-    domain: chemical or drug or treatment
-    range: disease or phenotypic feature
-    annotations:
-      canonical_predicate: true
-    close_mappings:
-      - NCIT:C15220 # diagnosis
-      - SIO:001331 # diagnosis
-    exact_mappings:
-      - DrugCentral:5271
-      - SEMMEDDB:diagnoses
 
   is diagnosed by:
     is_a: related to at instance level

@@ -134,6 +134,9 @@ classes:
 
   ## entity mixins
 
+  chemical or drug or treatment:
+    mixin: true
+
   chemical entity or gene or gene product:
     description: >-
       A union of chemical entities and children, and gene or gene product.
@@ -529,22 +532,6 @@ classes:
       - has quotient
       - has percentage
 
-slots:
-
-  increases amount or activity of:
-    is_a: related to at instance level
-    mixin: true
-    description: >-
-      A grouping mixin to help with searching for all the predicates that increase the amount
-      or activity of the object.
-
-  decreases amount or activity of:
-    is_a: related to at instance level
-    mixin: true
-    description: >-
-      A grouping mixin to help with searching for all the predicates that decrease the amount
-      or activity of the object.
-
   relationship quantifier:
     mixin: true
 
@@ -563,5 +550,18 @@ slots:
       high when the presence of the feature implies the existence of the disease
     mixin: true
 
-  chemical or drug or treatment:
+slots:
+
+  increases amount or activity of:
+    is_a: related to at instance level
     mixin: true
+    description: >-
+      A grouping mixin to help with searching for all the predicates that increase the amount
+      or activity of the object.
+
+  decreases amount or activity of:
+    is_a: related to at instance level
+    mixin: true
+    description: >-
+      A grouping mixin to help with searching for all the predicates that decrease the amount
+      or activity of the object.
