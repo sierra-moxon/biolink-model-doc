@@ -1,0 +1,3 @@
+name: biolink-model-doc
+description: my awesome datamodel is for awesome things
+source_schema_path: src/linkml/biolink_model_doc.yaml
