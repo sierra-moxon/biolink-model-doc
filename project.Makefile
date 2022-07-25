@@ -20,3 +20,6 @@ gen-oldschool:
 gen-yaml:
 	poetry run gen-linkml
 
+gh-deploy:
+# deploy documentation (note: requires documentation is in docs dir)
+	poetry run mkdocs gh-deploy --remote-branch gh-pages --force
