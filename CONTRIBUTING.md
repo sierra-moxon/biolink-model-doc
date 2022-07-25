@@ -4,4 +4,4 @@
 
 ## Create a Pull Request (PR)
 
-Thank you for contributing to biolink-model-doc
+Thank you for contributing to biolink-model

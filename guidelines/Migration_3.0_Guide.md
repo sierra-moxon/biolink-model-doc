@@ -243,7 +243,7 @@ subject and object qualifiers:
 
 ### Summary of chemical changes in Biolink-Model 2.0.0
 
-![Chemical Hierarchy for Biolink-Model 2.0.0](images/chemical_entity.png)
+![Chemical Hierarchy for Biolink-Model 2.0.0](../images/chemical_entity.png)
 
  * Refactor of the 'Molecular Entity' and 'Chemical Substance' classes and hierarchy.
  * 'Genomic Entity' is now a 'mixin' rather than a class.
@@ -260,8 +260,8 @@ subject and object qualifiers:
  * New association slots (edge properties): 'knowledge source', 'primary knowledge source', 'original knowledge source', 'aggregator knowledge source', 'supporting data source'
 
 ### Summary of reaction related changes in Biolink-Model 2.0.0
-![reaction_image_cont](images/reactions-cont.png) 
-![reaction_image](images/reactions.png) 
+![reaction_image_cont](../images/reactions-cont.png) 
+![reaction_image](../images/reactions.png) 
 
  * New association classes: ‘Reaction To Participant Association’, ‘Reaction To Catalyst Association’.
  * New predicates (and inverses): 'catalyzes', 'has substrate', 'consumes'.

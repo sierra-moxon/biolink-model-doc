@@ -19,6 +19,7 @@ nav:
   - FAQ: faq.md
   - Mapping to RDF: mapping-rdf.md
   - Mapping to Neo4j: mapping-neo4j.md
+  - Migrating to Biolink Model 3.0: Migration_3.0_Guide.md
 
 
 site_url: https://sierra-moxon.github.io/biolink-model-doc/
