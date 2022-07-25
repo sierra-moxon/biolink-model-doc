@@ -20,6 +20,11 @@ imports:
 # note: mixins are classes
 classes:
 
+  physical essence or occurrent:
+    description: >-
+      Either a physical or processual entity.
+    mixin: true
+
   increases amount or activity of:
     is_a: related to at instance level
     mixin: true
@@ -144,11 +149,6 @@ classes:
     mixin: true
 
  ## Top Level Abstractions of Material & Process Entities
-
-  physical essence or occurrent:
-    description: >-
-      Either a physical or processual entity.
-    mixin: true
 
   physical essence:
     description: >-

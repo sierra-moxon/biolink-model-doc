@@ -1,3 +1,3 @@
-name: biolink-model-doc
-description: my awesome datamodel is for awesome things
-source_schema_path: src/linkml/biolink_model_doc.yaml
+name: biolink-model
+description: A high level datamodel of biological entities and associations
+source_schema_path: src/linkml/biolink-model.yaml
