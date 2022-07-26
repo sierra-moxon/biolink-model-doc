@@ -15,6 +15,7 @@ default_curi_maps:
   - semweb_context
 
 imports:
+  - linkml:types
   - core
 
 slots:

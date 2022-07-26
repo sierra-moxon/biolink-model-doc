@@ -30,5 +30,3 @@ gen-pydantic:
 gen-python:
 	rm -f src/biolink-model-doc/datamodel/model.py
 	poetry run gen-python $(SOURCE_SCHEMA_PATH) > src/biolink-model-doc/datamodel/model.py
-
-	

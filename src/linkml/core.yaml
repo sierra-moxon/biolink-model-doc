@@ -25,6 +25,7 @@ emit_prefixes:
   - SO
 
 imports:
+  - linkml:types
   - epc
 
 ## ------------
